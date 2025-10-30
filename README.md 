@@ -1,0 +1,15 @@
+# Sistema de Asistencia con Python + Flask
+
+## 🚀 Características
+- Generación de tokens únicos para clases.
+- Registro de asistencia con validación JWT.
+- Alumnos creados automáticamente.
+- Reporte en JSON, HTML y CSV.
+- Base de datos SQLite con SQLAlchemy.
+
+## 📂 Instalación
+```bash
+git clone <repo>
+cd sistema_asistencia
+pip install -r requirements.txt
+python app.py

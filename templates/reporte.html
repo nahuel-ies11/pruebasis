@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Reporte de Asistencia</title>
+  <!-- Vincular CSS externo -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/reporte.css') }}">
+</head>
+<body>
+  <h2>Reporte de Asistencia</h2>
+  <table>
+    <tr>
+      <th>Alumno</th>
+      <th>Clase</th>
+      <th>Fecha</th>
+      <th>Hora</th>
+    </tr>
+    {% for r in asistencias %}
+    <tr>
+      <td>{{ r.alumno.nombre }}</td>
+      <td>{{ r.clase.materia }}</td>
+      <td>{{ r.fecha }}</td>
+      <td>{{ r.hora }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</body>
+</html>
