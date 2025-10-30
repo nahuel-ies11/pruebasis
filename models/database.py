@@ -23,9 +23,8 @@ class Alumno(db.Model):
     __tablename__ = "alumno"
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(100), nullable=False)
-    dni = db.Column(db.String(20), unique=True, nullable=False)  # identificador único
+    dni = db.Column(db.String(20), unique=True, nullable=False)
 
-    # Relación con Clase
     clases = db.relationship("Clase", secondary=alumno_clase, back_populates="alumnos")
 
 

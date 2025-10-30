@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
-from models.database import db, Alumno, Clase, Asistencia
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+from models.database import db, Alumno, Clase, Asistencia, Profesor
 
 import datetime
 
@@ -12,31 +12,44 @@ def dashboard():
     hoy = datetime.date.today().strftime("%Y-%m-%d")
     asistencias = Asistencia.query.filter_by(fecha=hoy).all()
     alumnos_asistidos = {a.alumno_id for a in asistencias}
+    profesor = Profesor.query.first()
 
     return render_template(
         "dashboard.html",
         alumnos=alumnos,
         clases=clases,
-        alumnos_asistidos=alumnos_asistidos
+        alumnos_asistidos=alumnos_asistidos,
+        profesor=profesor
     )
 
 
 @profesor_bp.route("/agregar-alumno", methods=["POST"])
 def agregar_alumno():
-    nombre = request.form.get("nombre")
-    dni = request.form.get("dni")
-    clase_id = request.form.get("clase_id")
+    data = request.get_json()
+    print("JSON recibido:", request.get_json())
+
+    nombre = data.get("nombre")
+    dni = data.get("dni")
+    clase_id = data.get("clase_id")
 
     if not nombre or not dni or not clase_id:
-        flash("⚠️ Faltan datos", "error")
-    elif Alumno.query.filter_by(dni=dni).first():
-        flash("⚠️ DNI ya registrado", "error")
-    else:
-        alumno = Alumno(nombre=nombre, dni=dni)
-        db.session.add(alumno)
-        clase = Clase.query.get(clase_id)
-        clase.alumnos.append(alumno)
-        db.session.commit()
-        flash("✅ Alumno agregado con éxito", "exito")
+        return jsonify({"success": False, "message": "Faltan datos"}), 400
 
-    return redirect(url_for("profesor.dashboard"))
+    clase = Clase.query.get(clase_id)
+    if not clase:
+        return jsonify({"success": False, "message": "Clase no encontrada"}), 404
+
+    if Alumno.query.filter_by(dni=dni).first():
+        return jsonify({"success": False, "message": "Alumno con este DNI ya existe"}), 400
+
+    alumno = Alumno(nombre=nombre, dni=dni)
+    db.session.add(alumno)
+    clase.alumnos.append(alumno)
+    db.session.commit()
+
+    return jsonify({
+        "success": True,
+        "message": "Alumno agregado con éxito",
+        "alumno": {"id": alumno.id, "nombre": alumno.nombre, "dni": alumno.dni}
+    })
+

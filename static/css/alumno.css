@@ -1,11 +1,16 @@
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 body {
   font-family: Arial, sans-serif;
-  background-color: #f4f6f9;
+  background: #00aef2;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 174, 242, 1) 0%,
+    rgba(87, 199, 133, 1) 60%
+  );
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -18,14 +23,14 @@ form {
   background: white;
   padding: 25px 35px;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
   width: 320px;
 }
 
 h2 {
   margin-bottom: 20px;
-  color: #333;
+  color: #ffffffff;
 }
 
 label {
@@ -46,14 +51,14 @@ input {
 }
 
 input:focus {
-  border-color: #007bff;
+  border-color: #0053acff;
   outline: none;
 }
 
 button {
   width: 100%;
   padding: 10px;
-  background: #007bff;
+  background: #009985ff;
   color: white;
   border: none;
   border-radius: 4px;
@@ -62,7 +67,7 @@ button {
 }
 
 button:hover {
-  background: #0056b3;
+  background: #036356ff;
 }
 
 .mensaje {
@@ -86,6 +91,32 @@ button:hover {
 
 .mensaje.info {
   background-color: #cce5ff;
-  color: #004085;
+  color: #333;
   border: 1px solid #b8daff;
+}
+
+/* loader por defecto oculto */
+.loader {
+  display: none;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 0 0 10px; /* si lo quieres al lado del botón */
+}
+
+/* clase que lo muestra */
+.loader.show {
+  display: inline-block; /* o block, según diseño */
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

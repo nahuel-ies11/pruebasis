@@ -1,24 +1,35 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="UTF-8">
-  <title>Registro de asistencia</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/alumno.css') }}">
-</head>
-<body>
-  <h2>Registrar asistencia</h2>
-  <form method="POST" action="{{ url_for('attendance.marcar_asistencia') }}">
-    <label>DNI:</label>
-    <input type="text" name="dni" value="{{ request.form.get('dni', '') }}">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Registro de asistencia</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/alumno.css') }}"
+    />
+  </head>
+  <body>
+    <h2>Registrar asistencia</h2>
+    <form method="POST" action="{{ url_for('attendance.marcar_asistencia') }}">
+      <label>DNI:</label>
+      <input type="text" name="dni" value="{{ request.form.get('dni', '') }}" />
 
-    <label>PIN:</label>
-    <input type="text" name="short_code" value="{{ request.form.get('short_code', '') }}">
+      <label>PIN:</label>
+      <input
+        type="text"
+        name="short_code"
+        value="{{ request.form.get('short_code', '') }}"
+      />
 
-    <button type="submit">Marcar asistencia</button>
-  </form>
+      <button id="btnRegistrar" type="submit">Marcar asistencia</button>
 
-  {% if mensaje %}
-    <p style="color: blue; margin-top: 15px;">{{ mensaje }}</p>
-  {% endif %}
-</body>
+      {% if mensaje %}
+      <p style="color: #e03f3f; margin-top: 15px">{{ mensaje }}</p>
+      {% endif %}
+
+      <div id="loader" class="loader" aria-hidden="true"></div>
+    </form>
+
+    <script src="{{ url_for('static', filename='js/alumno.js') }}"></script>
+  </body>
 </html>

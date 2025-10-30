@@ -1,145 +1,104 @@
 <!DOCTYPE html>
 <html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Dashboard - Asistencias</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/dashboard.css') }}"
+    />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <title>Dashboard - Asistencias</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
-</head>
+  <body>
+    <h1>Dashboard - Asistencias</h1>
 
-<body>
-  <h2>Listado de Alumnos</h2>
+    <div class="beetween-subtitle">
+      <h2>Listado de Alumnos</h2>
 
-  <div class="buttons">
-    <!-- Botón para abrir modal -->
-    <button id="abrirModal">➕ Agregar alumno</button>
-
-    <!-- Botón para generar token -->
-    <button id="generarToken">🔐 Generar Token</button>
-
-    <!-- Donde mostrar el token -->
-    <p id="tokenOutput">Sin token generado</p>
-  </div>
-
-  <!-- Tabla de alumnos -->
-  <table id="tablaAlumnos">
-    <thead>
-      <tr>
-        <th>Nombre</th>
-        <th>DNI</th>
-        <th>Estado</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for alumno in alumnos %}
-      <tr data-id="{{ alumno.id }}">
-        <td>{{ alumno.nombre }}</td>
-        <td>{{ alumno.dni }}</td>
-        <td>
-          {% if alumno.id in alumnos_asistidos %}
-          <span class="estado asistido">✔ Presente</span>
-          {% else %}
-          <span class="estado inasistido">✖ Ausente</span>
-          {% endif %}
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-
-  <!-- Modal para agregar alumno -->
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <span class="cerrar">&times;</span>
-      <h3>Registrar nuevo alumno</h3>
-      <form method="POST" action="{{ url_for('profesor.agregar_alumno') }}">
-        <label>Nombre:</label>
-        <input type="text" name="nombre" required><br><br>
-
-        <label>DNI:</label>
-        <input type="text" name="dni" required><br><br>
-
-        <label>Clase:</label>
-        <select name="clase_id" required>
-          <option value="">Seleccionar</option>
-          {% for c in clases %}
-          <option value="{{ c.id }}">{{ c.materia }}</option>
-          {% endfor %}
-        </select><br><br>
-
-        <button type="submit">Agregar Alumno</button>
-      </form>
+      <div style="display: flex; align-items: center; gap: 10px">
+        <h3>{{ profesor.nombre }}</h3>
+        <img src="../static/img/user.png" width=50 alt="user face">
+      </div>
     </div>
-  </div>
 
-  <!-- Popup mensajes -->
-  {% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-  <div id="popupMensaje">
-    {% for category, msg in messages %}
-    <span class="{{ category }}">{{ msg }}</span>
-    {% endfor %}
-  </div>
-  {% endif %}
-  {% endwith %}
+    <div class="buttons">
+      <!-- Botón para abrir modal -->
+      <button id="abrirModal">➕ Agregar alumno</button>
 
-  <!-- JS -->
-  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-  <script>
-    // --- MODAL ---
-    const modal = document.getElementById("modal");
-    const abrir = document.getElementById("abrirModal");
-    const cerrar = document.querySelector(".cerrar");
+      <!-- Botón para generar token -->
+      <button id="generarToken">🔐 Generar codigo</button>
 
-    abrir.onclick = () => modal.style.display = "block";
-    cerrar.onclick = () => modal.style.display = "none";
-    window.onclick = (event) => { if (event.target == modal) modal.style.display = "none"; };
+      <!-- Donde mostrar el token -->
 
-    // --- POPUP ---
-    const popup = document.getElementById("popupMensaje");
-    if (popup) {
-      popup.style.display = "block";
-      setTimeout(() => { popup.style.display = "none"; }, 3000);
-      if (popup.querySelector("span.success")) modal.style.display = "none";
-    }
+    <div id="tokenContainer">
+      <p id="tokenOutput">Codigo se asistencia no generado</p>
+      <span id="instruccionToken"></span>
+    </div>
 
-    // --- GENERAR TOKEN ---
-    const botonToken = document.getElementById("generarToken");
-    const tokenOutput = document.getElementById("tokenOutput");
+      
+    </div>
 
-    botonToken.addEventListener("click", async () => {
-      try {
-        const response = await fetch("/auth/generar-shortcode", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ clase_id: 1 })
-        });
+    <!-- Tabla de alumnos -->
+    <table id="tablaAlumnos">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>DNI</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for alumno in alumnos %}
+        <tr data-id="{{ alumno.id }}">
+          <td>{{ alumno.nombre }}</td>
+          <td>{{ alumno.dni }}</td>
+          <td>
+            {% if alumno.id in alumnos_asistidos %}
+            <span class="estado asistido">✔ Presente</span>
+            {% else %}
+            <span class="estado inasistido">✖ Ausente</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
 
-        const data = await response.json();
-        tokenOutput.textContent = "Token generado: " + data.shortcode;
-      } catch (err) {
-        console.error("Error generando token:", err);
-        tokenOutput.textContent = "⚠️ Error generando token";
-      }
-    });
+    <!-- Modal para agregar alumno -->
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <span class="cerrar">&times;</span>
+        <h3>Registrar nuevo alumno</h3>
+        <form
+          id="formAgregarAlumno"
+          method="POST"
+          action="{{ url_for('profesor.agregar_alumno') }}"
+        >
+          <label>Nombre:</label>
+          <input type="text" name="nombre" required />
 
-    // --- SOCKET.IO ---
-    const socket = io();
+          <label>DNI:</label>
+          <input type="text" name="dni" required />
 
-    socket.on("connect", () => console.log("✅ Conectado al servidor WebSocket"));
+          <div class="form-group">
+            <label>Clase:</label>
+          <select name="clase_id" required>
+            <option value="">Seleccionar</option>
+            {% for c in clases %}
+            <option value="{{ c.id }}">{{ c.materia }}</option>
+            {% endfor %}
+            </select
+          </div>
+          <button type="submit">Agregar Alumno</button>
+        </form>
+      </div>
+    </div>
 
-    // Escuchar nuevas asistencias en tiempo real
-    socket.on("asistencia_actualizada", (data) => {
-      console.log("📡 Nueva asistencia recibida:", data);
+    <!-- Popup mensajes dinámico -->
+    <div id="popupMensaje" class="popup"></div>
 
-      const row = document.querySelector(`tr[data-id='${data.alumno_id}']`);
-      if (row) {
-        const estadoCell = row.querySelector(".estado");
-        estadoCell.textContent = "✔ Presente";
-        estadoCell.className = "estado asistido";
-      }
-    });
-  </script>
-</body>
-
+    <!-- JS -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+  </body>
 </html>

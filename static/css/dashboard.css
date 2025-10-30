@@ -1,8 +1,48 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.beetween-subtitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+h1 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+h2 {
+  color: #333;
+}
+
 body {
   font-family: Arial, sans-serif;
   background: #f4f6f9;
+  max-width: 1440px;
+  margin: 0 auto;
   padding: 20px;
-  background: #FAF8F1;
+  background: #faf8f1;
+}
+
+label {
+  display: block;
+  text-align: left;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #444;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
 }
 
 .buttons {
@@ -12,6 +52,29 @@ body {
   align-items: center;
   margin-bottom: 20px;
 }
+
+#tokenContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+#instruccionToken {
+  margin-top: 10px;
+  padding: 10px 15px;
+  color: black;
+}
+
+#tokenOutput {
+  margin-top: 10px;
+  padding: 10px 15px;
+  background: #000000ff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
 header {
   display: flex;
   flex-direction: row;
@@ -20,29 +83,51 @@ header {
   background-color: #007bff;
 }
 
+form {
+  background: white;
+  padding: 25px 15px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
 button {
+  margin-top: 10px;
   padding: 10px 15px;
-  background: #34656D;
+  background: #34656d;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
 
-
 button:hover {
   background: #334443;
 }
 
 table {
-  
-  width: 90%;
+  width: 100%;
   border-collapse: collapse;
   background: white;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-th, td {
+th,
+td {
   padding: 12px;
   border-bottom: 1px solid #ddd;
   text-align: start;
@@ -70,9 +155,11 @@ th, td {
   display: none;
   position: fixed;
   z-index: 1;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.5);
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .modal-content {
@@ -91,23 +178,25 @@ th, td {
 }
 
 /* Estilos del popup */
-#popupMensaje {
+.popup {
   position: fixed;
   top: 20px;
   right: 20px;
-  z-index: 1000;
-  padding: 12px 20px;
-  border-radius: 6px;
-  font-weight: 500;
-  color: black;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  display: none; /* por defecto oculto */
+  background-color: #4caf50; /* verde por default */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  display: none;
+  z-index: 9999;
+  transition: opacity 0.3s ease;
 }
 
-#popupMensaje .error {
-  color: #dc3545; /* rojo */
+.popup.error {
+  background-color: #f44336; /* rojo */
 }
 
-#popupMensaje .success {
-  color: #28a745; /* verde */
+.popup.show {
+  display: block;
+  opacity: 1;
 }

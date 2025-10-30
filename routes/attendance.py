@@ -15,11 +15,13 @@ def alumno_form():
 
 @attendance_bp.route("/asistencia", methods=["GET", "POST"])
 def marcar_asistencia():
+    
+    mensaje = None
     dni = request.form.get("dni")
     short_code = request.form.get("short_code")
 
     if not dni or not short_code:
-        return render_template("alumno.html", mensaje="⚠️ Faltan datos")
+        return render_template("alumno.html", mensaje="Faltan datos")
 
     # Buscar el código
     sc = ShortCode.query.filter_by(code=short_code).first()
@@ -27,7 +29,7 @@ def marcar_asistencia():
         return render_template("alumno.html", mensaje="❌ Código no válido")
 
     if sc.expires_at < datetime.datetime.utcnow():
-        return render_template("alumno.html", mensaje="⏳ Código expirado")
+        return render_template("alumno.html", mensaje="Código expirado")
 
     clase_id = sc.clase_id
     sc.used_count += 1
@@ -37,10 +39,10 @@ def marcar_asistencia():
     # Buscar alumno por DNI
     alumno = Alumno.query.filter_by(dni=dni).first()
     if not alumno:
-        return render_template("alumno.html", mensaje="❌ Alumno no registrado")
+        return render_template("alumno.html", mensaje="Alumno no registrado")
 
     if alumno not in clase.alumnos:
-        return render_template("alumno.html", mensaje="❌ Alumno no pertenece a esta clase")
+        return render_template("alumno.html", mensaje="Alumno no pertenece a esta clase")
 
     # Evitar doble registro
     hoy = datetime.date.today().strftime("%Y-%m-%d")
@@ -48,7 +50,7 @@ def marcar_asistencia():
         alumno_id=alumno.id, clase_id=clase_id, fecha=hoy
     ).first()
     if existe:
-        return render_template("alumno.html", mensaje="⚠️ Ya existe registro de asistencia")
+        return render_template("alumno.html", mensaje="Ya existe registro de asistencia")
 
     # Registrar asistencia
     ahora = datetime.datetime.now()
