@@ -9,7 +9,7 @@
     />
   </head>
   <body>
-    <h2>Registrar asistencia</h2>
+    <h1>Registrar asistencia</h2>
     <form method="POST" action="{{ url_for('attendance.marcar_asistencia') }}">
       <label>DNI:</label>
       <input type="text" name="dni" value="{{ request.form.get('dni', '') }}" />

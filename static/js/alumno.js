@@ -7,12 +7,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById("btnRegistrar");
 
   form.addEventListener("submit", (e) => {
-    e.preventDefault(); // Evita que se envíe de inmediato
+    e.preventDefault();
     btn.disabled = true;
     loader.classList.add("show");
     loader.setAttribute("aria-hidden", "false");
 
-    // Espera 1 segundo (1000 ms) antes de enviar el formulario
+    
     setTimeout(() => {
       form.submit(); // Envío real del formulario
     }, 1000);
